@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bozaz</title>
+    <style>
+      #container {
+        width: 95%;
+        margin: auto;
+        font-family: sans-serif;
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+      }
+
+      #addProduct {
+        width: 30%;
+        /* padding: 10px; */
+        min-width: 200px;
+      }
+
+      .tableBox {
+        width: 45%;
+        /* padding: 10px; */
+        min-width: 550px;
+      }
+
+      hr {
+        color: honeydew;
+      }
+
+      input[type="text"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 20px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+
+      input[type="submit"] {
+        width: 30%;
+        background-color: rgb(11, 11, 204);
+        color: white;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      input[type="submit"]:hover {
+        box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),
+          7px 7px 20px 0px rgba(0, 0, 0, 0.1),
+          4px 4px 5px 0px rgba(0, 0, 0, 0.1);
+        color: white;
+      }
+
+      h1 {
+        color: teal;
+      }
+
+      .content-table {
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 1em;
+        min-width: 550px;
+        border-radius: 5px 5px 0 0;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .content-table thead tr {
+        background-color: #0c9479;
+        color: #ffffffd5;
+        text-align: left;
+        font-weight: bold;
+      }
+
+      .content-table th,
+      .content-table td {
+        padding: 12px 15px;
+      }
+
+      .content-table tbody tr {
+        border-bottom: 1px solid rgb(83, 211, 9);
+      }
+
+      .content-table tbody tr:nth-of-type(even) {
+        background-color: #b48f8f93;
+      }
+
+      .content-table tbody tr:last-of-type {
+        border-bottom: 2px solid #0e4e41;
+      }
+
+      .content-table tbody tr.active-row {
+        font-weight: bold;
+        color: #118f76;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <div id="addProduct">
+        <form id="myForm">
+          <h1>Add Product</h1>
+          <hr />
+          <label for="category">Category</label><br />
+          <select id="productCategory">
+            <option value="Category">Select Category</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Furniture">Furniture</option>
+            <option value="Home Appliance">Home Appliance</option>
+            <option value="Books">Books</option>
+          </select>
+          <br />
+          <label for="Title">Title</label> <br />
+          <input type="text" placeholder="Title" id="title" /> <br />
+          <label for="Description">Description</label> <br />
+          <textarea name="Description" id="description"></textarea> <br />
+          <label for="Price">Price</label> <br />
+          <input type="text" placeholder="Price" id="price" />
+          <input type="submit" value="Add" />
+        </form>
+      </div>
+
+      <div class="tableBox">
+        <h1>Product Info</h1>
+<hr>
+        <table class="content-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Category</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
+<script>
+  document.querySelector("#myForm").addEventListener("submit", addItem);
+  var arr = JSON.parse(localStorage.getItem("Bozaz")) || [];
+  displayTable(arr);
+
+  function addItem(event) {
+    event.preventDefault();
+
+    var category = document.getElementById("productCategory").value;
+    var title = document.getElementById("title").value;
+    var description = document.getElementById("description").value;
+    var price = document.getElementById("price").value;
+
+    // console.log(categoryData, titleData, descriptionData, priceData);
+
+    var count = 1;
+    for (var i = 1; i <= arr.length; i++) {
+      count++;
+    }
+
+    var Bozaz = {
+      countData: count,
+      categoryData: category,
+      titleData: title,
+      descriptionData: description,
+      priceData: price,
+    };
+
+    arr.push(Bozaz);
+    // console.log(arr)
+
+    localStorage.setItem("Bozaz", JSON.stringify(arr));
+
+    displayTable(arr);
+  }
+
+  function displayTable(arr) {
+    document.querySelector("tbody").innerHTML = "";
+    arr.map(function (elem) {
+      var row = document.createElement("tr");
+
+      var count = document.createElement("td");
+      count.textContent = elem.countData;
+      count.style.backgroundColor = "skyblue";
+
+      var category = document.createElement("td");
+      category.textContent = elem.categoryData;
+      if (elem.categoryData == "Category") {
+        category.style.backgroundColor = "red";
+        category.style.color = "white";
+        category.textContent = "Empty !  Category";
+      }
+
+      var title = document.createElement("td");
+      title.textContent = elem.titleData;
+
+      if (elem.titleData == "") {
+        title.style.backgroundColor = "black";
+        title.style.color = "white";
+        title.textContent = "Empty !  Title";
+      }
+
+      var description = document.createElement("td");
+      description.textContent = elem.descriptionData;
+
+      if (elem.descriptionData == "") {
+        description.style.backgroundColor = "#e75480";
+        description.style.color = "black";
+        description.textContent = "Empty !  Description";
+      }
+
+      var price = document.createElement("td");
+      price.textContent = "$ " + elem.priceData;
+
+      if (elem.priceData == "") {
+        price.style.backgroundColor = "yellow";
+        price.style.color = "black";
+        price.textContent = "Empty !  Price";
+      }
+
+      row.append(count, category, title, description, price);
+
+      document.querySelector("tbody").append(row);
+    });
+  }
+</script>
